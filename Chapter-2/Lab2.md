@@ -52,7 +52,7 @@ After strcpy
 
 ![Picture gdb at +48](/Chapter-2/imgs/Inject-gdb-before.png)
 
-Now we know where ret addr is. Now we replace ret addr with 0xffffd6ec
+Now we know where ret addr is. Now we replace ret addr with $esp.
 
 ![Picture about replacing value of ret addr](/Chapter-2/imgs/Inject-gdb-after.png)
 
