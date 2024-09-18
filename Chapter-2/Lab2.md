@@ -59,6 +59,9 @@ Now we know where ret addr is. Now we replace ret addr with $esp.
 The address in ret addr has been replaced with esp so the program returns and continues executing the instructions in the stack frame.
 
 Then we use `rm -r -f dummyfile` to delete file
+- `rm` (remove) command
+- `-f` (force) option to bypass protection or requires confirmation
+- `-r` (recursive) option
 
 ![Picture about using command to delete file](/Chapter-2/imgs/Privilege-delete.png)
 
