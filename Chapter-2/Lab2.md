@@ -1,4 +1,7 @@
 # 1. Inject code to delete file
+
+## a. Inject code
+
 ## b. Privilege escalation 
 
 Before deleting file
