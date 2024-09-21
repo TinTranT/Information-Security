@@ -107,7 +107,7 @@ Before deleting file
 
 File sh.asm
 
-![Picture about sh.asm](/Chapter-2/imgs/ctf.png)
+![Picture about sh.asm](/Chapter-2/imgs/sh.png)
 
 Firstly, we have to assembles the assembly source file and links the object file to create an executable file
 
