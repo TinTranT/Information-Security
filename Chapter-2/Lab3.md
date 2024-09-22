@@ -19,7 +19,7 @@ Now we create an environment variable in Linux with the path of file `file_del`
 - `nasm -g -f elf file_del.asm`
 - `ld -m elf_i386 -o file_del file_del.o`
 - `pwd` -> `/home/seed/seclabs/bof`
-- `export exploit_path="/home/seed/seclabs/bof/file_del`
+- `export exploit_path="/home/seed/seclabs/bof/file_del"`
 
 Based on `env`, we know that we successfully create env var
 
