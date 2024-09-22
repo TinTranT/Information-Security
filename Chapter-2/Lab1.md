@@ -55,20 +55,20 @@ We enter a 40 characters and 4 bytes to overwrite check's value.
 
 The goal is that the program execute shell.
 
-![Picture about bof3.c](/Chapter-2/imgs/bof3.png)
+![Picture about bof3.c](/Chapter-2/imgs/bof3/bof3.png)
 
 The function fgets(buf, 133, stdin) at line 21 can get a string of 133 characters but buf's length is only 128 characters. Therefore, we can exploit this vulnerability.
 
 Stack frame of this program:
 
-![Picture about stack frame of bof3.c](/Chapter-2/imgs/bof3-Stack-Frame.png)
+![Picture about stack frame of bof3.c](/Chapter-2/imgs/bof3/bof3-Stack-Frame.png)
 
 To get the address of shell, we use gdb and learn that the value is 0x0804845b
 
-![Picture about using gdb to get address of shell](/Chapter-2/imgs/bof3-gdb.png)
+![Picture about using gdb to get address of shell](/Chapter-2/imgs/bof3/bof3-gdb.png)
 
 or we can use `objdump -d bof3.out | grep shell`, it is more convenient.
 
 After that, we use `echo $(python -c "print('a'*128 + '\x5b\x84\x04\x08')") | ./bof3.out`
 
-![Picture about executing successfully function shell](/Chapter-2/imgs/bof3-result.png)
+![Picture about executing successfully function shell](/Chapter-2/imgs/bof3/bof3-result.png)
