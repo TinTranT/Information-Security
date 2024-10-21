@@ -267,6 +267,10 @@ python sqlmap.py -u "http://localhost:4280/vulnerabilities/sqli_blind/?id=&Submi
 ce31e8670; security=low" --dbs
 ```
 
+After waiting for sqlmap scan the website, we get the result
+
+<img alt="Screenshot" src="./img/task2/5.png">
+
 **Question 2**: Use sqlmap to get tables, users information
 **Answer 2**:
 
