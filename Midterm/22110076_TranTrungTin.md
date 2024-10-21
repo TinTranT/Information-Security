@@ -269,10 +269,6 @@ ce31e8670; security=low" --dbs
 
 After waiting for sqlmap scan the website, we get the result
 
-<img alt="Screenshot" src="./img/task2/5.png">
-
-After running second time
-
 <img alt="Screenshot" src="./img/task2/6.png">
 
 **Question 2**: Use sqlmap to get tables, users information
@@ -284,7 +280,7 @@ python sqlmap.py -u "http://localhost:4280/vulnerabilities/sqli_blind/?id=&Submi
 
 The result after waiting for sqlmap
 
-<img alt="Screenshot" src="./img/task2/7.png">
+<img alt="Screenshot" src="./img/task2/5.png">
 
 **Question 3**: Make use of John the Ripper to disclose the password of all database users from the above exploit
 **Answer 3**:
