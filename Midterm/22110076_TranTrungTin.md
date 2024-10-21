@@ -282,5 +282,9 @@ After running second time
 python sqlmap.py -u "http://localhost:4280/vulnerabilities/sqli_blind/?id=&Submit=Submit#" --cookie="PHPSESSID=c3243e5dcda438603c9d3aece31e8670; security=low" -D dvwa --tables
 ```
 
+The result after waiting for sqlmap
+
+<img alt="Screenshot" src="./img/task2/7.png">
+
 **Question 3**: Make use of John the Ripper to disclose the password of all database users from the above exploit
 **Answer 3**:
