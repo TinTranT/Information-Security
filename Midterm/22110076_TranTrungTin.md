@@ -271,6 +271,10 @@ After waiting for sqlmap scan the website, we get the result
 
 <img alt="Screenshot" src="./img/task2/5.png">
 
+After running second time
+
+<img alt="Screenshot" src="./img/task2/6.png">
+
 **Question 2**: Use sqlmap to get tables, users information
 **Answer 2**:
 
