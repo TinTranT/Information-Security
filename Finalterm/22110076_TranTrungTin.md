@@ -84,46 +84,47 @@ All steps are made manually with openssl at the terminal of each computer.
 
 **Answer 1**:
 
-Create File in user1
+***Create File in user1***
 ```sh
 echo "Sample text" > secret_file.txt
 cat secret_file.txt
 ```
 
-User1 Client
-1 Encrypt file with secret key (AES)
+***User1 Client***
+1. Encrypt file with secret key (AES)
 
 ```sh
 openssl rand -base64 32 > secret_key.bin
 openssl enc -aes-256-cbc -salt -pbkdf2 -in secret_file.txt -out secret_file.enc -pass file:./secret_key.bin
 ```
 
-2 Encrypt secret key with RSA
+2. Encrypt secret key with RSA
 
 ```sh
 openssl rsautl -encrypt -inkey public_key.pem -pubin -in secret_key.bin -out secret_key.enc
 ```
 
-3 Send file
+3. Send file
 
 ```sh
 scp secret_file.enc secret_key.enc private_key.pem ubuntu@10.0.3.4:/home/ubuntu
 ```
 
-User2 Client
-4 Decrypt secret key
+***User2 Client***
+
+4. Decrypt secret key
 
 ```sh
 openssl pkeyutl -decrypt -inkey private_key.pem -in secret_key.enc -out secret_key.bin
 ```
 
-5.Decrypt file with secret key
+5. Decrypt file with secret key
 
 ```sh
 openssl enc -d -aes-256-cbc -salt -pbkdf2 -in secret_file.enc -out decrypted_file.txt -pass file:./secret_key.bin
 ```
 
-Check file
+6. Check file
 
 ```sh
 cat decrypted_file.txt
