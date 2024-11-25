@@ -10,8 +10,10 @@ then veryfing at receiving side.
 
 We have 2 linux user
 
-User1 have ip 
-User2 have ip 
+![alt text](image.png)
+
+User1 have ip 10.0.2.15
+User2 have ip 10.0.3.4
 
 Set up ssh for both user
 
@@ -33,7 +35,11 @@ Now we watch the file we have just created
 cat file.txt
 ```
 
+![alt text](image-1.png)
+
 ***Step 3: Ping 2 user to ensure they are connected***
+
+
 
 ***Step 4: Transfering a plaintext file between 2 user***
 
@@ -42,13 +48,15 @@ openssl genrsa -out private_key.pem 2048
 openssl rsa -in private_key.pem -pubout -out public_key.pem
 ```
 
+![alt text](image-2.png)
+
 Calculate the hash of the file
 
 ```sh
 openssl dgst -sha256 -out file.txt.sha256 file.txt
 ```
 
-Create digital signature with private key
+Create digital snature with private key
 
 ```sh
 openssl dgst -sha256 -sign private_key.pem -out file.txt.sign file.txt
