@@ -62,6 +62,8 @@ Create digital snature with private key
 openssl dgst -sha256 -sign private_key.pem -out file.txt.sign file.txt
 ```
 
+![alt text](image-3.png)
+
 Transfer files to user2 with scp
 
 ```sh
