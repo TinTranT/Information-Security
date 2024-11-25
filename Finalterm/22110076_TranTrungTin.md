@@ -214,3 +214,50 @@ iptables -A INPUT -p icmp -j ACCEPT
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 ```
 
+***Step 4: Verify the configuration***
+
+1. Check the status of iptables rules:
+
+```sh
+sudo iptables -L
+```
+
+2. Test connectivity from the other host:
+
+Test ICMP (Ping):
+
+```sh
+ping inner-172.16.10.100
+```
+
+Test HTTP:
+
+```sh
+# Using curl
+curl http://inner-172.16.10.100
+
+# Or using wget
+wget http://inner-172.16.10.100
+```
+
+Test SSH:
+
+```sh
+# Basic SSH connection
+ssh user@inner-172.16.10.100
+
+# With verbose output for debugging
+ssh -v user@inner-172.16.10.100
+```
+
+To verify blocking/unblocking:
+
+```sh
+# Check current iptables rules
+sudo iptables -L
+
+# Test connection after each block/unblock command
+ping inner-172.16.10.100
+curl http://inner-172.16.10.100
+ssh user@inner-172.16.10.100
+```
