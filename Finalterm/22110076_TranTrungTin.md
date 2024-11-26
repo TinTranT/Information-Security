@@ -6,7 +6,7 @@ then veryfing at receiving side.
 
 **Answer 1**:
 
-***Step 1: Set up environment***
+## Step 1: Set up environment
 
 I will use the lab from `https://github.com/quang-ute/Security-labs/tree/main/Network/ping-pong` to set up environment
 
@@ -49,7 +49,7 @@ service ssh status
 
 ![alt text](image-11.png)
 
-***Step 2: Alice container***
+## Step 2: Alice container
 
 Access Alice terminal
 
@@ -118,7 +118,7 @@ After all these steps, we have 4 file
 
 ![alt text](image-8.png)
 
-***Step 3: Bob container***
+## Step 3: Bob container
 
 Access Bob terminal
 
@@ -200,13 +200,13 @@ All steps are made manually with openssl at the terminal of each computer.
 
 **Answer 1**:
 
-***Scenario for Task 2***
+## Scenario for Task 2
 - Bob generates a public and private key pair, then shares the public key with Alice
 - Alice generates a symmetric key to encrypt the file, and uses the public key to encrypt the symmetric key
 - Alice sends the encrypted file and the encrypted symmetric key to Bob
 - Bob uses the private key to encrypt the symmetric key, then uses the symmetric key to encrypt the file
 
-***Step 1: Bob generates key pair***
+## Step 1: Bob generates key pair
 
 1. Generate RSA Key Pair
 
@@ -260,7 +260,7 @@ scp public_key.pem alice@10.9.0.5:/home/lab2
 
 ![alt text](image-22.png)
 
-***Step 2: Alice prepares the file for sending***
+## Step 2: Alice prepares the file for sending
 
 1. Create a plain message
 
@@ -312,7 +312,7 @@ scp message.enc symmetric_key.enc bob@10.9.0.6:/home/lab2
 
 ![alt text](image-28.png)
 
-***Step 3: Bob decrypts the files***
+## Step 3: Bob decrypts the files
 
 Ensures that Bob receive `message.enc` and `symmetric_key.enc`
 
@@ -351,143 +351,213 @@ From VMs of previous tasks, install iptables and configure one of the 2 VMs as a
 
 **Answer 1**:
 
-***Step 1: Update docker-compose.yml***
-Configure inner-172.16.10.100 as the firewall to block/unblock HTTP, ICMP, and SSH requests.
+## Step 1: Set up environment
+
+1. Configure docker
+
+In this lab, we have 2 user
+- Alice for client
+- Bob for Web and SSH service
+
+Make sure both Alice and Bob have iptables for the tasks
+
 ```sh
-inner:
-        build: 
-            context: ./image
-        image: base-image
-        container_name: inner-172.16.10.100
-        tty: true
-        cap_add:
-            - ALL
-        networks:
-            net-172.16.10.0:
-                ipv4_address: 172.16.10.100
-        command: bash -c "
-                      ip route del default &&
-                      ip route add default via 172.16.10.10 &&
-                      /etc/init.d/openbsd-inetd start &&
-                      tail -f /dev/null
-                 "
+apt update
+apt install iptables
 ```
-Ensure iweb-172.16.10.110 is set up as the web and SSH server.
+
+Checking if they have iptables.
+
+![alt text](image-32.png)
+
+- Alice
+
+![alt text](image-33.png)
+
+- Bob
+
+
+Additionally, include the `cap_add` option in the `docker-compose.yml` file to grant the necessary permissions for running iptables.
+
+![alt text](image-34.png)
+
+Now we have to rebuild docker with recent update.
+
 ```sh
-apache1:
-        build: 
-            context: ./apache
-        image: apache-image
-        container_name: iweb-172.16.10.110
-        tty: true
-        cap_add:
-            - ALL
-        networks:
-            net-172.16.10.0:
-                ipv4_address: 172.16.10.110
-        command: bash -c "
-                      ip route del default &&
-                      ip route add default via 172.16.10.10 &&
-                      service ssh start &&
-                      service apache2 start &&
-                      tail -f /dev/null
-                "
-```
-***Step 2: Build and run the Docker containers***
-Build the Docker images and start the containers using docker-compose.
-```sh
+docker-compose build
 docker-compose up -d
 ```
-***Step 3: Demonstrate blocking/unblocking HTTP, ICMP, and SSH requests***
 
-Access the inner-172.16.10.100 container to add/remove iptables rules.
+2. Configure bob as a web and SSH server
 
-```sh
-docker exec -it inner-172.16.10.100 /bin/bash
-```
-
-Then we edit iptables:
-
-1. Block HTTP requests (port 80).
+Now we will install apache2 and ssh on Bob's computer and run these services
 
 ```sh
-iptables -A INPUT -p tcp --dport 80 -j REJECT
+apt update
+apt install openssh-server
+apt install openssh-client
+apt install apache2
+service apache2 start
+service ssh start
 ```
 
-2. Block ICMP requests (ping).
+![alt text](image-35.png)
+
+Change passwd of Bob so that Alice can use ssh service for this task.
 
 ```sh
-iptables -A INPUT -p icmp -j REJECT
+useradd -m -s /bin/bash bob
+passwd bob
 ```
 
-3. Block SSH requests (port 22).
+## Step 2: Configure iptables to block traffic in Bob's computer
+
+Some helpful commands for iptables
+
+- Monitor iptable
 
 ```sh
-iptables -A INPUT -p tcp --dport 22 -j REJECT
+iptables -L -v -n
 ```
 
-4. Unblock HTTP requests (port 80).
+![alt text](image-36.png)
+
+- Delete existed iptable
 
 ```sh
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -F
+iptables -X 
+iptables -Z
 ```
 
-5. Unblock ICMP requests (ping).
+In this step, we will demonstrate blocking three services
+
+- HTTP traffic (port 80)
+- ICMP (ping) 
+- SSH access (port 22)
+
+1. Block HTTP access from Alice
+
+Before configuration, Alice can access via HTTP.
+
+![alt text](image-38.png)
+
+Now, Let configure Bob's iptables.
 
 ```sh
-iptables -A INPUT -p icmp -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -s 10.9.0.5 -j DROP
 ```
 
-6. Unblock SSH requests (port 22).
+Creates a firewall rule that blocks all incoming TCP traffic on port `80` (HTTP) from the IP address `10.9.0.5` (Alice).
+
+![alt text](image-37.png)
+
+After configuration, Alice can not access via HTTP because no HTML respone is sent back to Alice.
+
+![alt text](image-39.png)
+
+2. Block ICMP access from Alice
+
+Firstly, Alice successfully pings Bob.
 
 ```sh
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+ping 10.9.0.6
 ```
 
-***Step 4: Verify the configuration***
+![alt text](image-40.png)
 
-1. Check the status of iptables rules:
+After that, Let configure Bob's iptables.
 
 ```sh
-sudo iptables -L
+iptables -A INPUT -p icmp --icmp-type echo-request -s 10.9.0.5 -j DROP
 ```
 
-2. Test connectivity from the other host:
+Creates a firewall rule that blocks all incoming `ICMP` traffic from the IP address `10.9.0.5` (Alice) which ping Bob.
 
-Test ICMP (Ping):
+![alt text](image-41.png)
+
+We see that Alice can not ping Bob now.
+
+![alt text](image-42.png)
+
+3. Block SSH access from Alice
+
+Before this step, Alice can access SSH 
 
 ```sh
-ping inner-172.16.10.100
+ssh bob@10.9.0.6
 ```
 
-Test HTTP:
+![alt text](image-43.png)
+
+Let configure a rule that blocks incoming SSH traffic from `10.9.0.5` (Alice).
 
 ```sh
-# Using curl
-curl http://inner-172.16.10.100
-
-# Or using wget
-wget http://inner-172.16.10.100
+iptables -A INPUT -p tcp --dport 22 -s 10.9.0.5 -j DROP
 ```
 
-Test SSH:
+![alt text](image-44.png)
+
+Now Alice's access is blocked.
+
+![alt text](image-45.png)
+
+## Step 3: Configure iptables to unblock traffic in Bob's computer
+
+Before unblocking
+
+![alt text](image-46.png)
+
+1. Unblock HTTP access from Alice
 
 ```sh
-# Basic SSH connection
-ssh user@inner-172.16.10.100
-
-# With verbose output for debugging
-ssh -v user@inner-172.16.10.100
+iptables -D INPUT -p tcp --dport 80 -s 10.9.0.5 -j DROP
 ```
 
-To verify blocking/unblocking:
+Now we use option `-D` to delete this rule from INPUT chain.
+
+![alt text](image-47.png)
+
+Now Alice can `curl` a web from Bob.
 
 ```sh
-# Check current iptables rules
-sudo iptables -L
-
-# Test connection after each block/unblock command
-ping inner-172.16.10.100
-curl http://inner-172.16.10.100
-ssh user@inner-172.16.10.100
+curl http://10.9.0.6
 ```
+
+![alt text](image-48.png)
+
+2. Unblock ICMP access from Alice
+
+With same way of previous step, we delete ICMP block rule.
+
+```sh
+iptables -D INPUT -p icmp --icmp-type echo-request -s 10.9.0.5 -j DROP
+```
+
+![alt text](image-49.png)
+
+Let check Alice side
+
+```sh
+ping 10.9.0.6
+```
+
+![alt text](image-50.png)
+
+3. Unblock SSH access from Alice
+
+Delete rule
+
+```sh
+iptables -D INPUT -p tcp --dport 22 -s 10.9.0.5 -j DROP
+```
+
+![alt text](image-51.png)
+
+Alice check SSH access
+
+```sh
+ssh bob@10.9.0.6
+```
+
+![alt text](image-52.png)
